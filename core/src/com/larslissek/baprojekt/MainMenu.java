@@ -68,7 +68,7 @@ public class MainMenu implements Screen {
 		
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/ocraextended.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 25;
+		parameter.size = 29;
 		style.font = generator.generateFont(parameter);
 		
 		
