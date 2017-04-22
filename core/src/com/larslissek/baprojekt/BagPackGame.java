@@ -188,6 +188,7 @@ public class BagPackGame implements Screen {
 		
 		update(delta);
 		
+		//test
 		
 		batch.setProjectionMatrix(cam.combined);
 		
