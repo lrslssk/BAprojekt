@@ -10,7 +10,7 @@ public class MyGdxGame extends Game {
 	
 	@Override
 	public void create () {
-		setScreen(new BagPackGame(this));
+		setScreen(new ParkGame(this));
 	}
 
 	@Override
