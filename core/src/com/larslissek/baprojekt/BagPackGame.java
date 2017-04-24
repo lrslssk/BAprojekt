@@ -3,9 +3,11 @@ package com.larslissek.baprojekt;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -30,6 +32,8 @@ public class BagPackGame implements Screen {
 	
 	
 	FreeTypeFontGenerator generator;
+	BitmapFont font;
+	
 	Texture background;
 	Texture rucksack;
 	Texture regal;
@@ -47,6 +51,10 @@ public class BagPackGame implements Screen {
 	Music derfarbmalkasten;
 	
 	Music backpack;
+	Music wrong;
+	private float bubbletimer;
+	private String currentItemName = "";
+	private Texture speechbubble;
 	
 	public BagPackGame(MyGdxGame game) {
 		this.game = game;
@@ -69,7 +77,8 @@ public class BagPackGame implements Screen {
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/ocraextended.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 29;
-		
+		parameter.color = Color.BLACK;
+		font = generator.generateFont(parameter);
 		
 		
 		background = new Texture(Gdx.files.internal("testroom.jpg"));
@@ -80,6 +89,8 @@ public class BagPackGame implements Screen {
 		farbkasten = new Texture(Gdx.files.internal("malkasten.png"));
 		kuscheltier = new Texture(Gdx.files.internal("baer.png"));
 		
+		
+		speechbubble = new Texture(Gdx.files.internal("speechbubble.png"));
 		
 		
 		bookImage = new Image(book);
@@ -99,8 +110,8 @@ public class BagPackGame implements Screen {
 				}
 		    	
 		    	else if (Intersector.overlaps(new Rectangle(bookImage.getX(), bookImage.getY(), bookImage.getWidth(), bookImage.getHeight()), new Rectangle(950, 30, 250, 250))) {
-					System.out.println("Falsch!");
-				}
+		    		wrong.play();
+		    	}
 			}
 		    
 		    
@@ -110,6 +121,9 @@ public class BagPackGame implements Screen {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
             	if(!dasbuch.isPlaying())
             	dasbuch.play();
+            	
+            	showNameBubble("Das Buch");
+            	
             	return true;
             }
         });
@@ -133,8 +147,8 @@ public class BagPackGame implements Screen {
 				}
 		    	
 		    	else if (Intersector.overlaps(new Rectangle(farbkastenImage.getX(), farbkastenImage.getY(), farbkastenImage.getWidth(), farbkastenImage.getHeight()), new Rectangle(950, 30, 250, 250))) {
-					System.out.println("Falsch!");
-				}
+		    		wrong.play();
+		    	}
 			}
 		});
 		
@@ -142,6 +156,8 @@ public class BagPackGame implements Screen {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
             	if(!derfarbmalkasten.isPlaying())
             		derfarbmalkasten.play();
+            	
+            	showNameBubble("Der Farbmalkasten");
             	return true;
             }
         });
@@ -157,8 +173,8 @@ public class BagPackGame implements Screen {
 		    
 		    public void dragStop (InputEvent event, float x, float y, int pointer) {
 		    	if (Intersector.overlaps(new Rectangle(kuscheltierImage.getX(), kuscheltierImage.getY(), kuscheltierImage.getWidth(), kuscheltierImage.getHeight()), new Rectangle(150, 30, 170, 190))) {
-					System.out.println("Falsch!");
-				}
+		    		wrong.play();
+		    	}
 		    	
 		    	else if (Intersector.overlaps(new Rectangle(kuscheltierImage.getX(), kuscheltierImage.getY(), kuscheltierImage.getWidth(), kuscheltierImage.getHeight()), new Rectangle(950, 30, 250, 250))) {
 		    		backpack.play();
@@ -171,6 +187,8 @@ public class BagPackGame implements Screen {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
             	if(!daskuscheltier.isPlaying())
             		daskuscheltier.play();
+            	
+            	showNameBubble("Das Kuscheltier");
             	return true;
             }
         });
@@ -179,6 +197,12 @@ public class BagPackGame implements Screen {
 		derfarbmalkasten = Gdx.audio.newMusic(Gdx.files.internal("sounds/derfarbmalkasten.ogg"));
 		daskuscheltier = Gdx.audio.newMusic(Gdx.files.internal("sounds/daskuscheltier.ogg"));
 		backpack = Gdx.audio.newMusic(Gdx.files.internal("sounds/backpack.ogg"));
+		wrong = Gdx.audio.newMusic(Gdx.files.internal("sounds/wrong.ogg"));
+	}
+
+	protected void showNameBubble(String string) {
+		bubbletimer = 3f;
+		currentItemName = string;
 	}
 
 	@Override
@@ -198,6 +222,14 @@ public class BagPackGame implements Screen {
 		batch.draw(regal, 950, 30, 250, 250);
 		
 		//batch.draw(book, 410, 190, 75, 75);
+		
+		
+		if(bubbletimer > 0){
+			batch.draw(speechbubble, 450, 600, 400, 100);
+			font.draw(batch, currentItemName + "", 495, 675);
+			bubbletimer -= delta;
+		}
+		
 		batch.end();
 		
 		stage.act();
