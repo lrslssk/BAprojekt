@@ -1,5 +1,7 @@
 package com.larslissek.baprojekt;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -35,12 +38,19 @@ public class ParkGame implements Screen {
 	
 	
 	private float bubbletimer;
-	private String currentItemName = "Hi, ich bins, Emre!";
+	private String currentItemName;
 	private Texture speechbubble;
 	private Image speechbubbleImage;
 	private float newXpos;
 	private float newYpos;
+	private float newZoomLevel;
 	
+	private int currentDirection = -1;
+	private Vector2 currentPosition;
+	
+	private ArrayList<String> directions;
+	
+	float beginTimer = 0;
 	
 	public ParkGame(MyGdxGame game) {
 		this.game = game;
@@ -55,6 +65,13 @@ public class ParkGame implements Screen {
 		
 		newXpos = port.getWorldWidth() / 2;
 		newYpos = port.getWorldHeight() / 2;
+		newZoomLevel = 1f;
+		
+		directions = new ArrayList<String>();
+		
+		directions.add("Hallo <Name>!");
+		directions.add("Ich erkläre dir nun den Weg zum Wetterschacht.");
+		directions.add("Dein aktueller Standpunkt wird auf der Karte markiert.");
 		
 		camUI = new OrthographicCamera();
 		portUI = new StretchViewport(MyGdxGame.V_WIDTH, MyGdxGame.V_HEIGHT, camUI);
@@ -115,9 +132,9 @@ public class ParkGame implements Screen {
 		batch.setProjectionMatrix(camUI.combined);
 		batch.begin();
 		
-		if(bubbletimer > -100){
+		if(bubbletimer > 0){
 			batch.draw(speechbubble, 450, 600, 400, 100);
-			font.draw(batch, currentItemName + "", 495, 675);
+			font.draw(batch, directions.get(currentDirection) + "", 495, 675);
 			bubbletimer -= delta;
 		}
 		
@@ -132,12 +149,36 @@ public class ParkGame implements Screen {
 	private void update(float delta) {
 		cam.update();
 		camUI.update();
+		
+		if(beginTimer < 2){
+			beginTimer += delta;
+		}
+		
+		else if(currentDirection == -1){
+			currentDirection++;
+			bubbletimer = 3;
+		}
+		
+		if(currentDirection == 0 && bubbletimer == 0){
+			currentDirection++;
+			bubbletimer = 3;
+		}
+		
 		if(newXpos != cam.position.x && newYpos != cam.position.y)
-			updateCam(delta, newXpos, newYpos);
-		//cam.position.set(260, 150, 0);
+			updateCamPosition(delta, newXpos, newYpos);
+		
+		if(newZoomLevel != cam.zoom)
+			updateCamZoom(delta, newZoomLevel);
+		
+		
+//		if(Gdx.input.isTouched()){
+//			newXpos = 250;
+//			newYpos = 140;
+//			newZoomLevel = 0.5f;
+//		}
 	}
 	
-	 public void updateCam(float delta, float Xtarget, float Ytarget) {
+	 public void updateCamPosition(float delta, float Xtarget, float Ytarget) {
 	        Vector3 target = new Vector3(Xtarget, Ytarget, 0); 
 	        Vector3 cameraPosition = cam.position;
 	        final float speed = delta, ispeed = 1.0f - (speed * 0.7f);
@@ -145,6 +186,12 @@ public class ParkGame implements Screen {
 	        target.scl(speed);
 	        cameraPosition.add(target);
 	        cam.position.set(cameraPosition);
+	}
+	 
+	public void updateCamZoom(float delta, float newZoom){
+		if(cam.zoom > newZoom){
+			cam.zoom -= delta / 4.5f;
+		}
 	}
 
 	@Override
