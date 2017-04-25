@@ -31,8 +31,8 @@ public class MainMenu implements Screen {
 	
 	TextButtonStyle style;
 	
-	TextButton playButton;
-	TextButton optionsButton;
+	TextButton playBagGameButton;
+	TextButton playParkGameButton;
 	
 	Skin skin;
 	private TextureAtlas atlas;
@@ -72,27 +72,27 @@ public class MainMenu implements Screen {
 		style.font = generator.generateFont(parameter);
 		
 		
-		playButton = new TextButton("Spielen", style);
-		playButton.setSize(300, 75);
-		playButton.setPosition(MyGdxGame.V_WIDTH / 2 - playButton.getWidth() / 2, 220);
-		stage.addActor(playButton);
+		playBagGameButton = new TextButton("Tasche Spiel", style);
+		playBagGameButton.setSize(300, 75);
+		playBagGameButton.setPosition(MyGdxGame.V_WIDTH / 2 - playBagGameButton.getWidth() / 2, 220);
+		stage.addActor(playBagGameButton);
 		
 		
-		optionsButton = new TextButton("Optionen", style);
-		optionsButton.setSize(300, 75);
-		optionsButton.setPosition(MyGdxGame.V_WIDTH / 2 - optionsButton.getWidth() / 2, 120);
-		stage.addActor(optionsButton);
+		playParkGameButton = new TextButton("Park Spiel", style);
+		playParkGameButton.setSize(300, 75);
+		playParkGameButton.setPosition(MyGdxGame.V_WIDTH / 2 - playParkGameButton.getWidth() / 2, 120);
+		stage.addActor(playParkGameButton);
 		
-		playButton.addListener(new ChangeListener() {
+		playBagGameButton.addListener(new ChangeListener() {
 	        public void changed (ChangeEvent event, Actor actor) {
 	        	game.setScreen(new BagPackGame(game));
 	        }
 	    });
 		
 		
-		optionsButton.addListener(new ChangeListener() {
+		playParkGameButton.addListener(new ChangeListener() {
 	        public void changed (ChangeEvent event, Actor actor) {
-
+	        	game.setScreen(new ParkGame(game));
 	        }
 	    });
 		

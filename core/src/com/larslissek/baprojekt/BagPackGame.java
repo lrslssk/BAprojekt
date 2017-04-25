@@ -56,6 +56,9 @@ public class BagPackGame implements Screen {
 	private String currentItemName = "";
 	private Texture speechbubble;
 	
+	private int itemCount = 3;
+	private float endGameTimer = 0;
+	
 	public BagPackGame(MyGdxGame game) {
 		this.game = game;
 	}
@@ -107,6 +110,7 @@ public class BagPackGame implements Screen {
 		    	if (Intersector.overlaps(new Rectangle(bookImage.getX(), bookImage.getY(), bookImage.getWidth(), bookImage.getHeight()), new Rectangle(150, 30, 170, 190))) {
 					backpack.play();
 					bookImage.remove();
+					itemCount--;
 				}
 		    	
 		    	else if (Intersector.overlaps(new Rectangle(bookImage.getX(), bookImage.getY(), bookImage.getWidth(), bookImage.getHeight()), new Rectangle(950, 30, 250, 250))) {
@@ -144,6 +148,7 @@ public class BagPackGame implements Screen {
 		    	if (Intersector.overlaps(new Rectangle(farbkastenImage.getX(), farbkastenImage.getY(), farbkastenImage.getWidth(), farbkastenImage.getHeight()), new Rectangle(150, 30, 170, 190))) {
 		    		backpack.play();
 		    		farbkastenImage.remove();
+		    		itemCount--;
 				}
 		    	
 		    	else if (Intersector.overlaps(new Rectangle(farbkastenImage.getX(), farbkastenImage.getY(), farbkastenImage.getWidth(), farbkastenImage.getHeight()), new Rectangle(950, 30, 250, 250))) {
@@ -179,6 +184,7 @@ public class BagPackGame implements Screen {
 		    	else if (Intersector.overlaps(new Rectangle(kuscheltierImage.getX(), kuscheltierImage.getY(), kuscheltierImage.getWidth(), kuscheltierImage.getHeight()), new Rectangle(950, 30, 250, 250))) {
 		    		backpack.play();
 		    		kuscheltierImage.remove();
+		    		itemCount--;
 				}
 			}
 		});
@@ -240,6 +246,13 @@ public class BagPackGame implements Screen {
 	
 	private void update(float delta) {
 		cam.update();
+		if(itemCount == 0){
+			endGameTimer += delta;
+		}
+		
+		if(endGameTimer >= 3){
+			game.setScreen(new MainMenu(game));
+		}
 	}
 
 	@Override

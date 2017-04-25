@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -45,7 +46,6 @@ public class ParkGame implements Screen {
 	
 	
 	private float bubbletimer;
-	private String currentItemName;
 	private Texture speechbubble;
 	private Image speechbubbleImage;
 	private float newXpos;
@@ -65,6 +65,10 @@ public class ParkGame implements Screen {
 	ImageButton arrow1;
 	ImageButton arrow2;
 	
+	Music bruecke, erstekreuzung, fluss, halloagent, pyramide, rechtenweg, standpunkt, weg, ziel;
+	private boolean pyramideNotYetPlayed = true;
+	private float endGameTimer;
+	
 	public ParkGame(MyGdxGame game) {
 		this.game = game;
 	}
@@ -74,7 +78,18 @@ public class ParkGame implements Screen {
 		cam = new OrthographicCamera();
 		port = new StretchViewport(MyGdxGame.V_WIDTH, MyGdxGame.V_HEIGHT, cam);
 		cam.position.set(port.getWorldWidth() / 2, port.getWorldHeight() / 2, 0);
-		//cam.zoom = 0.4f;
+
+		bruecke = Gdx.audio.newMusic(Gdx.files.internal("sounds/parkgame/bruecke.ogg"));
+		erstekreuzung = Gdx.audio.newMusic(Gdx.files.internal("sounds/parkgame/erstekreuzung.ogg"));
+		fluss = Gdx.audio.newMusic(Gdx.files.internal("sounds/parkgame/fluss.ogg"));
+		halloagent = Gdx.audio.newMusic(Gdx.files.internal("sounds/parkgame/halloagent.ogg"));
+		pyramide = Gdx.audio.newMusic(Gdx.files.internal("sounds/parkgame/pyramide.ogg"));
+		rechtenweg = Gdx.audio.newMusic(Gdx.files.internal("sounds/parkgame/rechtenweg.ogg"));
+		standpunkt = Gdx.audio.newMusic(Gdx.files.internal("sounds/parkgame/standpunkt.ogg"));
+		weg = Gdx.audio.newMusic(Gdx.files.internal("sounds/parkgame/weg.ogg"));
+		ziel = Gdx.audio.newMusic(Gdx.files.internal("sounds/parkgame/ziel.ogg"));
+		
+		
 		
 		newXpos = port.getWorldWidth() / 2;
 		newYpos = port.getWorldHeight() / 2;
@@ -84,10 +99,19 @@ public class ParkGame implements Screen {
 		
 		directions = new ArrayList<String>();
 		
-		directions.add("      Hallo <Name>!");
+		directions.add("      Hallo Agent!");
 		directions.add("Ich erkläre dir nun den \n Weg zum Wetterschacht.");
 		directions.add("Dein aktueller Standpunkt\nwird auf der Karte markiert.");
 		directions.add("An der ersten Kreuzung\n   gehe nach Norden.");
+		directions.add("");
+		directions.add("Laufe über die Brücke.");
+		directions.add("Gehe in Richtung\n  der Pyramide.");
+		directions.add(""); //7
+		directions.add("Überquere den Fluss.");
+		directions.add(""); //9
+		directions.add("Nehme an der Gabelung den\n       rechten Weg.");
+		directions.add(""); //11
+		directions.add("  Super! Du hast \nden Wetterschacht gefunden!");
 		
 		camUI = new OrthographicCamera();
 		portUI = new StretchViewport(MyGdxGame.V_WIDTH, MyGdxGame.V_HEIGHT, camUI);
@@ -133,27 +157,23 @@ public class ParkGame implements Screen {
 		arrow1.addListener(new ChangeListener() {
 	        public void changed (ChangeEvent event, Actor actor) {
 	        	System.out.println("arrow 1 clicked");
+	        	currentDirection++;
 	        }
 	    });
 		
 		arrow2.addListener(new ChangeListener() {
 	        public void changed (ChangeEvent event, Actor actor) {
 	        	System.out.println("arrow 2 clicked");
+	        	//TODO wrong turn, switch to football game
 	        }
 	    });
 		
 		stage2.addActor(arrow1);
 		stage2.addActor(arrow2);
 		
-//		arrow1.rotateBy(90f);
-//		arrow2.rotateBy(90f);
 	}
 
 	
-	protected void showSpeechBubble(String string) {
-		bubbletimer = 5f;
-		currentItemName = string;
-	}
 	
 	@Override
 	public void render(float delta) {
@@ -216,11 +236,13 @@ public class ParkGame implements Screen {
 		else if(currentDirection == -1){
 			currentDirection++;
 			bubbletimer = 3;
+			halloagent.play();
 		}
 		
 		if(currentDirection == 0 && bubbletimer <= 0){
 			currentDirection++;
 			bubbletimer = 7;
+			weg.play();
 		}
 		
 		if(currentDirection == 1 && bubbletimer <= 0){
@@ -228,6 +250,7 @@ public class ParkGame implements Screen {
 			bubbletimer = 7;
 			currentPosition.set(95, 35);
 			showPositionMarker = true;
+			standpunkt.play();
 		}
 		
 		if(currentDirection == 2 && bubbletimer <= 0){
@@ -240,6 +263,7 @@ public class ParkGame implements Screen {
 		if(currentDirection == 2 && bubbletimer <= 0 && cam.position.x <= 325){
 			bubbletimer = Integer.MAX_VALUE;
 			currentDirection++;
+			erstekreuzung.play();
 		}
 		
 		
@@ -261,11 +285,160 @@ public class ParkGame implements Screen {
 			arrow2.getImage().setRotation(170f);
 		}
 		
+		if(currentDirection == 4){
+			arrow1.setVisible(false);
+			arrow2.setVisible(false);
+			
+			showPositionMarker = false;
+			
+			bubbletimer = 0;
+			
+			newXpos = 330;
+			newYpos = 250;
+		}
+		
+		if(currentDirection == 4 && cam.position.y > 245){
+			arrow1.setVisible(true);
+			arrow2.setVisible(true);
+			
+			arrow1.setPosition(255, 275);
+			arrow2.setPosition(290, 140);
+			
+			arrow1.getImage().setRotation(-150f);
+			arrow2.getImage().setRotation(140f);
+			
+			showPositionMarker = true;
+			currentPosition.set(205, 183);
+			
+			bubbletimer = Integer.MAX_VALUE;
+			currentDirection++;
+			bruecke.play();
+		}
+		
+		if(currentDirection == 6){
+			arrow1.setPosition(190, 285);
+			arrow2.setPosition(375, 245);
+			
+			arrow1.getImage().setRotation(-35f);
+			arrow2.getImage().setRotation(160f);
+			
+			showPositionMarker = true;
+			currentPosition.set(275, 250);
+			if(pyramideNotYetPlayed){
+				pyramide.play();
+				pyramideNotYetPlayed = false;
+			}
+		}
+		
+		
+		if(currentDirection == 7){
+			arrow1.setVisible(false);
+			arrow2.setVisible(false);
+			
+			showPositionMarker = false;
+			
+			bubbletimer = 0;
+			
+			newXpos = 331;
+			newYpos = 450;
+		}
+		
+		if(currentDirection == 7 && cam.position.y >= 445){
+			arrow1.setVisible(true);
+			arrow2.setVisible(true);
+			
+			showPositionMarker = true;
+			currentPosition.set(142, 395);
+			
+			arrow1.setPosition(80, 470);
+			arrow2.setPosition(238, 450);
+			
+			arrow1.getImage().setRotation(-68f);
+			arrow2.getImage().setRotation(200f);
+			
+			
+			bubbletimer = Integer.MAX_VALUE;
+			currentDirection++;
+			fluss.play();
+		}
+		
+		
+		if(currentDirection == 9){
+			arrow1.setVisible(false);
+			arrow2.setVisible(false);
+			
+			showPositionMarker = false;
+			
+			bubbletimer = 0;
+			
+			newXpos = 345;
+			newYpos = 540;
+		}
+		
+		if(currentDirection == 9 && cam.position.y >= 535){
+			arrow1.setVisible(true);
+			arrow2.setVisible(true);
+			
+			showPositionMarker = true;
+			currentPosition.set(295, 530);
+			
+			arrow1.setPosition(405, 555);
+			arrow2.setPosition(395, 610);
+			
+			arrow1.getImage().setRotation(-181f);
+			arrow2.getImage().setRotation(195f);
+			
+			
+			bubbletimer = Integer.MAX_VALUE;
+			currentDirection++;
+			rechtenweg.play();
+		}
+		
+		
+		if(currentDirection == 11){
+			arrow1.setVisible(false);
+			arrow2.setVisible(false);
+			
+			showPositionMarker = false;
+			
+			bubbletimer = 0;
+			
+			newXpos = 405;
+			newYpos = 540;
+			newZoomLevel = 0.3f;
+		}
+		
+		if(currentDirection == 11 && cam.position.x >= 400){
+			showPositionMarker = true;
+			currentPosition.set(379, 526);
+			
+			bubbletimer = 7;
+			currentDirection++;
+			ziel.play();
+			
+		}
+		
+		if(currentDirection == 12){
+			endGameTimer += delta;
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		if(newXpos != cam.position.x && newYpos != cam.position.y)
 			updateCamPosition(delta, newXpos, newYpos);
 		
 		if(newZoomLevel != cam.zoom)
 			updateCamZoom(delta, newZoomLevel);
+		
+		if(endGameTimer > 5){
+			game.setScreen(new MainMenu(game));
+		}
 		
 	}
 	
@@ -281,7 +454,7 @@ public class ParkGame implements Screen {
 	 
 	public void updateCamZoom(float delta, float newZoom){
 		if(cam.zoom > newZoom){
-			cam.zoom -= delta / 4.5f;
+			cam.zoom -= delta / 2.3f;
 		}
 	}
 
