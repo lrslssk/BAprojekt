@@ -41,14 +41,26 @@ public class BagPackGame implements Screen {
 	Texture book;
 	Texture farbkasten;
 	Texture kuscheltier;
+	Texture heft;
+	Texture auto;
+	Texture etui;
+	Texture wecker;
 	
 	Image bookImage;
 	Image farbkastenImage;
 	Image kuscheltierImage;
+	Image heftImage;
+	Image autoImage;
+	Image etuiImage;
+	Image weckerImage;
 	
 	Music dasbuch;
 	Music daskuscheltier;
 	Music derfarbmalkasten;
+	Music dasheft;
+	Music dasauto;
+	Music dasetui;
+	Music derwecker;
 	
 	Music backpack;
 	Music wrong;
@@ -56,7 +68,7 @@ public class BagPackGame implements Screen {
 	private String currentItemName = "";
 	private Texture speechbubble;
 	
-	private int itemCount = 3;
+	private int itemCount = 7;
 	private float endGameTimer = 0;
 	
 	public BagPackGame(MyGdxGame game) {
@@ -91,6 +103,10 @@ public class BagPackGame implements Screen {
 		book = new Texture(Gdx.files.internal("book.png"));
 		farbkasten = new Texture(Gdx.files.internal("malkasten.png"));
 		kuscheltier = new Texture(Gdx.files.internal("baer.png"));
+		heft = new Texture(Gdx.files.internal("heft.png"));
+		auto = new Texture(Gdx.files.internal("auto.png"));
+		etui = new Texture(Gdx.files.internal("etui.png"));
+		wecker = new Texture(Gdx.files.internal("wecker.png"));
 		
 		
 		speechbubble = new Texture(Gdx.files.internal("speechbubble.png"));
@@ -199,9 +215,152 @@ public class BagPackGame implements Screen {
             }
         });
 		
+		
+		
+		
+		heftImage = new Image(heft);
+		heftImage.setBounds(640, 170, 75, 75);
+		stage.addActor(heftImage);
+		
+		heftImage.addListener(new DragListener() {
+		    public void drag(InputEvent event, float x, float y, int pointer) {
+		        heftImage.moveBy(x - heftImage.getWidth() / 2, y - heftImage.getHeight() / 2);
+		    }
+		    
+		    public void dragStop (InputEvent event, float x, float y, int pointer) {
+		    	if (Intersector.overlaps(new Rectangle(heftImage.getX(), heftImage.getY(), heftImage.getWidth(), heftImage.getHeight()), new Rectangle(150, 30, 170, 190))) {
+		    		backpack.play();
+		    		heftImage.remove();
+		    		itemCount--;
+		    	}
+		    	
+		    	else if (Intersector.overlaps(new Rectangle(heftImage.getX(), heftImage.getY(), heftImage.getWidth(), heftImage.getHeight()), new Rectangle(950, 30, 250, 250))) {
+		    		wrong.play();
+				}
+			}
+		});
+		
+		heftImage.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+            	if(!dasheft.isPlaying())
+            		dasheft.play();
+            	
+            	showNameBubble("Das Heft");
+            	return true;
+            }
+        });
+		
+		
+		
+		
+		autoImage = new Image(auto);
+		autoImage.setBounds(540, 220, 66, 50);
+		stage.addActor(autoImage);
+		
+		autoImage.addListener(new DragListener() {
+		    public void drag(InputEvent event, float x, float y, int pointer) {
+		        autoImage.moveBy(x - autoImage.getWidth() / 2, y - autoImage.getHeight() / 2);
+		    }
+		    
+		    public void dragStop (InputEvent event, float x, float y, int pointer) {
+		    	if (Intersector.overlaps(new Rectangle(autoImage.getX(), autoImage.getY(), autoImage.getWidth(), autoImage.getHeight()), new Rectangle(150, 30, 170, 190))) {
+		    		wrong.play();
+		    	}
+		    	
+		    	else if (Intersector.overlaps(new Rectangle(autoImage.getX(), autoImage.getY(), autoImage.getWidth(), autoImage.getHeight()), new Rectangle(950, 30, 250, 250))) {
+		    		backpack.play();
+		    		autoImage.remove();
+		    		itemCount--;
+				}
+			}
+		});
+		
+		autoImage.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+            	if(!dasauto.isPlaying())
+            		dasauto.play();
+            	
+            	showNameBubble("Das Auto");
+            	return true;
+            }
+        });
+		
+		
+		
+		etuiImage = new Image(etui);
+		etuiImage.setBounds(740, 50, 100, 75);
+		stage.addActor(etuiImage);
+		
+		etuiImage.addListener(new DragListener() {
+		    public void drag(InputEvent event, float x, float y, int pointer) {
+		        etuiImage.moveBy(x - etuiImage.getWidth() / 2, y - etuiImage.getHeight() / 2);
+		    }
+		    
+		    public void dragStop (InputEvent event, float x, float y, int pointer) {
+		    	if (Intersector.overlaps(new Rectangle(etuiImage.getX(), etuiImage.getY(), etuiImage.getWidth(), etuiImage.getHeight()), new Rectangle(150, 30, 170, 190))) {
+		    		backpack.play();
+		    		etuiImage.remove();
+		    		itemCount--;
+		    	}
+		    	
+		    	else if (Intersector.overlaps(new Rectangle(etuiImage.getX(), etuiImage.getY(), etuiImage.getWidth(), etuiImage.getHeight()), new Rectangle(950, 30, 250, 250))) {
+		    		wrong.play();
+				}
+			}
+		});
+		
+		etuiImage.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+            	if(!dasetui.isPlaying())
+            		dasetui.play();
+            	
+            	showNameBubble("Das Etui");
+            	return true;
+            }
+        });
+		
+		
+		
+		weckerImage = new Image(wecker);
+		weckerImage.setBounds(440, 50, 75, 75);
+		stage.addActor(weckerImage);
+		
+		weckerImage.addListener(new DragListener() {
+		    public void drag(InputEvent event, float x, float y, int pointer) {
+		        weckerImage.moveBy(x - weckerImage.getWidth() / 2, y - weckerImage.getHeight() / 2);
+		    }
+		    
+		    public void dragStop (InputEvent event, float x, float y, int pointer) {
+		    	if (Intersector.overlaps(new Rectangle(weckerImage.getX(), weckerImage.getY(), weckerImage.getWidth(), weckerImage.getHeight()), new Rectangle(150, 30, 170, 190))) {
+		    		wrong.play();
+		    	}
+		    	
+		    	else if (Intersector.overlaps(new Rectangle(weckerImage.getX(), weckerImage.getY(), weckerImage.getWidth(), weckerImage.getHeight()), new Rectangle(950, 30, 250, 250))) {
+		    		backpack.play();
+		    		weckerImage.remove();
+		    		itemCount--;
+				}
+			}
+		});
+		
+		weckerImage.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+            	if(!derwecker.isPlaying())
+            		derwecker.play();
+            	
+            	showNameBubble("Der Wecker");
+            	return true;
+            }
+        });
+		
+		
 		dasbuch = Gdx.audio.newMusic(Gdx.files.internal("sounds/dasbuch.ogg"));
 		derfarbmalkasten = Gdx.audio.newMusic(Gdx.files.internal("sounds/derfarbmalkasten.ogg"));
 		daskuscheltier = Gdx.audio.newMusic(Gdx.files.internal("sounds/daskuscheltier.ogg"));
+		dasheft = Gdx.audio.newMusic(Gdx.files.internal("sounds/dasheft.ogg"));
+		dasauto = Gdx.audio.newMusic(Gdx.files.internal("sounds/dasauto.ogg"));
+		dasetui = Gdx.audio.newMusic(Gdx.files.internal("sounds/dasetui.ogg"));
+		derwecker = Gdx.audio.newMusic(Gdx.files.internal("sounds/derwecker.ogg"));
 		backpack = Gdx.audio.newMusic(Gdx.files.internal("sounds/backpack.ogg"));
 		wrong = Gdx.audio.newMusic(Gdx.files.internal("sounds/wrong.ogg"));
 	}
