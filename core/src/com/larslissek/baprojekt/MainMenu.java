@@ -2,6 +2,7 @@ package com.larslissek.baprojekt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,8 +32,7 @@ public class MainMenu implements Screen {
 	
 	TextButtonStyle style;
 	
-	TextButton playBagGameButton;
-	TextButton playParkGameButton;
+	TextButton playButton;
 	TextButton aboutButton;
 	
 	Skin skin;
@@ -40,6 +40,8 @@ public class MainMenu implements Screen {
 	
 	FreeTypeFontGenerator generator;
 	Texture background;
+	
+	Sound DWDIntro = Gdx.audio.newSound(Gdx.files.internal("sounds/misc/DWD.mp3"));
 	
 	public MainMenu(MyGdxGame game) {
 		this.game = game;
@@ -73,43 +75,43 @@ public class MainMenu implements Screen {
 		style.font = generator.generateFont(parameter);
 		
 		
-		playBagGameButton = new TextButton("Tasche Spiel", style);
-		playBagGameButton.setSize(300, 75);
-		playBagGameButton.setPosition(MyGdxGame.V_WIDTH / 2 - playBagGameButton.getWidth() / 2, 220);
-		stage.addActor(playBagGameButton);
+		playButton = new TextButton("Spielen", style);
+		playButton.setSize(300, 75);
+		playButton.setPosition(MyGdxGame.V_WIDTH / 2 - playButton.getWidth() / 2, 120);
+		stage.addActor(playButton);
 		
-		
-		playParkGameButton = new TextButton("Park Spiel", style);
-		playParkGameButton.setSize(300, 75);
-		playParkGameButton.setPosition(MyGdxGame.V_WIDTH / 2 - playParkGameButton.getWidth() / 2, 120);
-		stage.addActor(playParkGameButton);
-
 		
 		aboutButton = new TextButton("Über die App", style);
 		aboutButton.setSize(300, 75);
 		aboutButton.setPosition(MyGdxGame.V_WIDTH / 2 - aboutButton.getWidth() / 2, 20);
 		stage.addActor(aboutButton);
 		
-		playBagGameButton.addListener(new ChangeListener() {
+		playButton.addListener(new ChangeListener() {
 	        public void changed (ChangeEvent event, Actor actor) {
-	        	game.setScreen(new BagPackGame(game));
+	        	
+	        	if(!IOController.doesProfileExist()){
+	        		//TODO set Screen to profile creation
+	        	}
+	        	
+	        	else{
+	        		//TODO set Screen to profile selection
+	        	}
 	        }
 	    });
 		
-		
-		playParkGameButton.addListener(new ChangeListener() {
-	        public void changed (ChangeEvent event, Actor actor) {
-	        	game.setScreen(new ParkGame(game));
-	        }
-	    });
 
 		aboutButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
+				DWDIntro.stop();
 				game.setScreen(new AboutScreen(game));
 			}
 		});
 		
 		background = new Texture(Gdx.files.internal("DWDcover.jpg"));
+		
+		//TODO
+		//DWDIntro.play();
+		//DWDIntro.loop();
 	}
 
 	@Override
