@@ -91,6 +91,7 @@ public class MainMenu implements Screen {
 	        	
 	        	if(!IOController.doesProfileExist()){
 	        		//TODO set Screen to profile creation
+	        		game.setScreen(new ProfileCreationScreen(game));
 	        	}
 	        	
 	        	else{
@@ -110,8 +111,8 @@ public class MainMenu implements Screen {
 		background = new Texture(Gdx.files.internal("DWDcover.jpg"));
 		
 		//TODO
-		//DWDIntro.play();
-		//DWDIntro.loop();
+		DWDIntro.play();
+		DWDIntro.loop();
 	}
 
 	@Override

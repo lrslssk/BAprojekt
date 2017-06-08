@@ -70,6 +70,10 @@ public class IntroScreen implements Screen {
 		
 		if(alphaLevel + delta * 0.2 < 1)
 		alphaLevel += delta * 0.2;
+		
+		else{
+			game.setScreen(new MainMenu(game));
+		}
 	}
 
 	@Override
