@@ -10,7 +10,8 @@ public class MyGdxGame extends Game {
 	
 	@Override
 	public void create () {
-		setScreen(new IntroScreen(this));
+		Assets.load();
+		setScreen(new ProfileSelectionScreen(this));
 	}
 
 	@Override

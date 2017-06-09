@@ -2,7 +2,7 @@ package com.larslissek.baprojekt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -51,7 +51,7 @@ public class ProfileCreationScreen implements Screen {
 	private String currentTextline = "";
 	private boolean showBubble = false;
 	
-	Sound sound;
+	Music sound;
 	private boolean soundStarted = false;
 	
 	public ProfileCreationScreen(MyGdxGame game) {
@@ -101,7 +101,7 @@ public class ProfileCreationScreen implements Screen {
 		
 		speechbubble = new Texture(Gdx.files.internal("speechbubble.png"));
 		
-		sound = Gdx.audio.newSound(Gdx.files.internal("sounds/misc/newProfileSound.ogg"));
+		sound = Assets.profileCreationSound;
 		
 		friendbookButton.setDisabled(true);
 		friendbookButton.setVisible(false);

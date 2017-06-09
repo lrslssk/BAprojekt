@@ -2,7 +2,7 @@ package com.larslissek.baprojekt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -41,7 +41,7 @@ public class MainMenu implements Screen {
 	FreeTypeFontGenerator generator;
 	Texture background;
 	
-	Sound DWDIntro = Gdx.audio.newSound(Gdx.files.internal("sounds/misc/DWD.mp3"));
+	Music DWDIntro = Assets.DWDIntro;
 	
 	public MainMenu(MyGdxGame game) {
 		this.game = game;
@@ -91,11 +91,14 @@ public class MainMenu implements Screen {
 	        	
 	        	if(!IOController.doesProfileExist()){
 	        		//TODO set Screen to profile creation
+	        		DWDIntro.stop();
 	        		game.setScreen(new ProfileCreationScreen(game));
 	        	}
 	        	
 	        	else{
 	        		//TODO set Screen to profile selection
+	        		DWDIntro.stop();
+	        		game.setScreen(new ProfileSelectionScreen(game));
 	        	}
 	        }
 	    });
@@ -112,7 +115,7 @@ public class MainMenu implements Screen {
 		
 		//TODO
 		DWDIntro.play();
-		DWDIntro.loop();
+		DWDIntro.setLooping(true);
 	}
 
 	@Override

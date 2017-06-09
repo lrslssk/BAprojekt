@@ -102,8 +102,8 @@ public class AboutScreen implements Screen {
 		font = generator.generateFont(parameter);
 		font.setColor(Color.BLACK);
 		
-		infofak = new Texture(Gdx.files.internal("infofakultaet.png"));
-		SuK = new Texture(Gdx.files.internal("SundK.png"));
+		infofak = new Texture(Gdx.files.internal("infofakultaet.PNG"));
+		SuK = new Texture(Gdx.files.internal("SundK.PNG"));
 	}
 
 	@Override
