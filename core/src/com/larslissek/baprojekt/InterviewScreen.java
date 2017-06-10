@@ -79,6 +79,11 @@ public class InterviewScreen implements Screen {
 	TextButton confirmButton;
 	protected String playerName;
 	
+	private boolean nameEntered = false;
+	private CharSequence nameString = "Name:";
+	
+	private float nextScreenTimer = 0;
+	
 	public InterviewScreen(MyGdxGame game) {
 		this.game = game;
 	}
@@ -216,6 +221,7 @@ public class InterviewScreen implements Screen {
 		nameField = new TextField("", TFstyle);
 		nameField.setPosition(100, 520);
 		nameField.setSize(350, 50);
+		nameField.setMaxLength(10);
 		
 		stage.addActor(nameField);
 		nameField.setVisible(false);
@@ -240,6 +246,7 @@ public class InterviewScreen implements Screen {
 	        	
 	        	if(name.length() <= 10){
 	        		playerName = name;
+	        		nameEntered = true;
 	        	}
 	        }
 	    });
@@ -271,7 +278,7 @@ public class InterviewScreen implements Screen {
 		
 		
 		if(isSchoolPicked && afterSchoolPickTimer > 6){
-			font.draw(batch, "Name:", 590, 430);
+			font.draw(batch, nameString , 590, 430);
 		}
 		
 		batch.end();
@@ -337,6 +344,28 @@ public class InterviewScreen implements Screen {
 			
 			confirmButton.setVisible(true);
 			confirmButton.setDisabled(false);
+		}
+		
+		if(nameEntered){
+			nextScreenTimer += delta;
+		}
+		
+		if(nameEntered){
+			confirmButton.setDisabled(true);
+			confirmButton.setVisible(false);
+			
+			nameField.setVisible(false);
+			nameField.setDisabled(true);
+			
+			nameString = "";
+			
+			
+			showBubble = true;
+			currentTextline = "Das ist ein schöner Name!\nZeige mir wie du aussiehst!";
+		}
+		
+		if(nextScreenTimer > 4){
+			game.setScreen(new CreateAvatarScreen(game));
 		}
 		
 		
