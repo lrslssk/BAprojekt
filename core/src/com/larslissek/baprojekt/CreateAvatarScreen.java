@@ -2,22 +2,24 @@ package com.larslissek.baprojekt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class CreateAvatarScreen implements Screen {
@@ -38,10 +40,7 @@ public class CreateAvatarScreen implements Screen {
 	Stage stage;
 	
 	
-	Texture blondesMaedchen;
-	Sprite maedchen;
 	float startTimer = 0;
-	private float maedchenalpha = 0;
 	
 	private Texture speechbubble;
 	
@@ -49,8 +48,36 @@ public class CreateAvatarScreen implements Screen {
 	private String currentTextline = "";
 	private boolean showBubble = false;
 	
-	Music sound;
-	private boolean soundStarted = false;
+	Sprite[] faces;
+	Sprite[] hair;
+	Sprite[] glasses;
+	Sprite[] shirts;
+	
+	int currentShirt;
+	int currentFace;
+	int currentGlasses = -1;
+	int currentHair;
+	
+	
+	Skin skin;
+	private TextureAtlas atlas;
+	
+	
+	TextButtonStyle style;
+	TextButtonStyle style2;
+	
+	
+	TextButton nextFaceButton;
+	TextButton previousFaceButton;
+	
+	TextButton nextShirtButton;
+	TextButton previousShirtButton;
+	
+	TextButton nextGlassesButton;
+	TextButton previousGlassesButton;
+	
+	TextButton nextHairButton;
+	TextButton previousHairButton;
 	
 	public CreateAvatarScreen(MyGdxGame game) {
 		this.game = game;
@@ -69,6 +96,7 @@ public class CreateAvatarScreen implements Screen {
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 29;
 		
+		
 		font = generator.generateFont(parameter);
 		font.setColor(0, 0, 0, 1);
 		
@@ -79,14 +107,152 @@ public class CreateAvatarScreen implements Screen {
 		Gdx.input.setInputProcessor(stage);
 		
 		
-		blondesMaedchen = new Texture(Gdx.files.internal("blondesmaedchen.png"));
-		maedchen = new Sprite(blondesMaedchen);
-		maedchen.setPosition(100, 20);
 		
 		speechbubble = new Texture(Gdx.files.internal("speechbubble.png"));
 		
-		sound = Assets.profileCreationSound;
+		faces = Assets.faces;
+		hair = Assets.hair;
+		glasses = Assets.glasses;
+		shirts = Assets.shirts;
 		
+		
+		skin = new Skin();
+		atlas = new TextureAtlas(Gdx.files.internal("ui/ui-orange.atlas"));
+		skin.addRegions(atlas);
+		
+		style = new TextButtonStyle();
+		style.over = skin.getDrawable("knob_02");
+		style.up = skin.getDrawable("knob_02");
+		style.font = font;
+		
+		style2 = new TextButtonStyle();
+		style2.over = skin.getDrawable("knob_04");
+		style2.up = skin.getDrawable("knob_04");
+		style2.font = font;
+		
+		nextFaceButton = new TextButton("", style);
+		nextFaceButton.setSize(50, 50);
+		nextFaceButton.setPosition(770, 230);
+		stage.addActor(nextFaceButton);
+		
+		nextFaceButton.addListener(new ChangeListener() {
+	        public void changed (ChangeEvent event, Actor actor) {
+	        	currentFace++;
+	        	
+	        	if(currentFace > faces.length - 1){
+	        		currentFace = 0;
+	        	}
+	        }
+	    });
+		
+		nextHairButton = new TextButton("", style);
+		nextHairButton.setSize(50, 50);
+		nextHairButton.setPosition(770, 165);
+		stage.addActor(nextHairButton);
+		
+		nextHairButton.addListener(new ChangeListener() {
+	        public void changed (ChangeEvent event, Actor actor) {
+	        	currentHair++;
+	        	
+	        	if(currentHair > hair.length - 1){
+	        		currentHair = 0;
+	        	}
+	        }
+	    });
+		
+		
+		nextShirtButton = new TextButton("", style);
+		nextShirtButton.setSize(50, 50);
+		nextShirtButton.setPosition(770, 105);
+		stage.addActor(nextShirtButton);
+		
+		nextShirtButton.addListener(new ChangeListener() {
+	        public void changed (ChangeEvent event, Actor actor) {
+	        	currentShirt++;
+	        	
+	        	if(currentShirt > shirts.length - 1){
+	        		currentShirt = 0;
+	        	}
+	        }
+	    });
+		
+		
+		nextGlassesButton = new TextButton("", style);
+		nextGlassesButton.setSize(50, 50);
+		nextGlassesButton.setPosition(770, 45);
+		stage.addActor(nextGlassesButton);
+		
+		nextGlassesButton.addListener(new ChangeListener() {
+	        public void changed (ChangeEvent event, Actor actor) {
+	        	currentGlasses++;
+	        	
+	        	if(currentGlasses > glasses.length - 1){
+	        		currentGlasses = -1;
+	        	}
+	        }
+	    });
+		
+		previousFaceButton = new TextButton("", style2);
+		previousFaceButton.setSize(50, 50);
+		previousFaceButton.setPosition(460, 230);
+		stage.addActor(previousFaceButton);
+		
+		previousFaceButton.addListener(new ChangeListener() {
+	        public void changed (ChangeEvent event, Actor actor) {
+	        	currentFace--;
+	        	
+	        	if(currentFace < 0){
+	        		currentFace = faces.length - 1;
+	        	}
+	        }
+	    });
+		
+		previousHairButton = new TextButton("", style2);
+		previousHairButton.setSize(50, 50);
+		previousHairButton.setPosition(460, 165);
+		stage.addActor(previousHairButton);
+		
+		previousHairButton.addListener(new ChangeListener() {
+	        public void changed (ChangeEvent event, Actor actor) {
+	        	currentHair--;
+	        	
+	        	if(currentHair < 0){
+	        		currentHair = hair.length - 1;
+	        	}
+	        }
+	    });
+		
+		
+		previousShirtButton = new TextButton("", style2);
+		previousShirtButton.setSize(50, 50);
+		previousShirtButton.setPosition(460, 105);
+		stage.addActor(previousShirtButton);
+		
+		previousShirtButton.addListener(new ChangeListener() {
+	        public void changed (ChangeEvent event, Actor actor) {
+	        	currentShirt--;
+	        	
+	        	if(currentShirt < 0){
+	        		currentShirt = shirts.length - 1;
+	        	}
+	        }
+	    });
+		
+		
+		previousGlassesButton = new TextButton("", style2);
+		previousGlassesButton.setSize(50, 50);
+		previousGlassesButton.setPosition(460, 45);
+		stage.addActor(previousGlassesButton);
+		
+		previousGlassesButton.addListener(new ChangeListener() {
+	        public void changed (ChangeEvent event, Actor actor) {
+	        	currentGlasses--;
+	        	
+	        	if(currentGlasses < -1){
+	        		currentGlasses = glasses.length - 1;
+	        	}
+	        }
+	    });
 	}
 
 	@Override
@@ -100,13 +266,29 @@ public class CreateAvatarScreen implements Screen {
 		
 		batch.begin();
 		batch.draw(background, 0, 0);
-		//maedchen.draw(batch, maedchenalpha);
 		
 		
 		if(showBubble){
 			batch.draw(speechbubble, -30, 300, 700, 200);
 			font.draw(batch, currentTextline  + "", 50, 465);
 		}
+		
+		shirts[currentShirt].setBounds(606, 333, 85, 85);
+		shirts[currentShirt].draw(batch);
+		
+		faces[currentFace].setBounds(600, 400, 100, 100);
+		faces[currentFace].draw(batch);
+		
+		hair[currentHair].setBounds(600, 430, 100, 100);
+		hair[currentHair].draw(batch);
+		
+		if(currentGlasses != -1){
+			glasses[currentGlasses].setBounds(615, 430, 70, 30);
+			glasses[currentGlasses].draw(batch);
+		}
+		
+		
+		
 		
 		batch.end();
 		
