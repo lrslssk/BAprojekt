@@ -40,6 +40,10 @@ public class IOController {
 		prefs.remove("profilename");
 		prefs.flush();
 	}
+	
+	public static String getProfile1Name(){
+		return prefs.getString("profilename", "Error");
+	}
 }
 
 

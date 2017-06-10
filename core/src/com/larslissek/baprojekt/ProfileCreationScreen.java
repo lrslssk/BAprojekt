@@ -90,8 +90,7 @@ public class ProfileCreationScreen implements Screen {
 		
 		friendbookButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				//game.setScreen(new SelectAvatarScreen(game));
-				System.out.println("button pressed");
+				game.setScreen(new InterviewScreen(game));
 			}
 		});
 		
