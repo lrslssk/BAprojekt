@@ -1,7 +1,10 @@
 package com.larslissek.baprojekt;
 
+import sun.font.FontManager;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,12 +17,13 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class CreateAvatarScreen implements Screen {
@@ -253,6 +257,26 @@ public class CreateAvatarScreen implements Screen {
 	        	}
 	        }
 	    });
+		
+		
+		LabelStyle style = new LabelStyle(font, Color.BLACK);
+		
+		Label faceLabel = new Label("Gesicht", style);
+		stage.addActor(faceLabel);
+		
+		Label hairLabel = new Label("Haare", style);
+		stage.addActor(hairLabel);
+		
+		Label shirtLabel = new Label("Shirt", style);
+		stage.addActor(shirtLabel);
+		
+		Label glassesLabel = new Label("Brille", style);
+		stage.addActor(glassesLabel);
+		
+		faceLabel.setPosition(573, 240);
+		hairLabel.setPosition(590, 176);
+		shirtLabel.setPosition(590, 116);
+		glassesLabel.setPosition(583, 55);
 	}
 
 	@Override
@@ -279,7 +303,22 @@ public class CreateAvatarScreen implements Screen {
 		faces[currentFace].setBounds(600, 400, 100, 100);
 		faces[currentFace].draw(batch);
 		
-		hair[currentHair].setBounds(600, 430, 100, 100);
+		if(currentHair >= 13 && currentHair <= 24){
+			if(currentHair >= 17 && currentHair <= 20){
+				hair[currentHair].setBounds(600, 405, 100, 100);
+			}
+			
+			else{
+				hair[currentHair].setBounds(600, 405, 100, 100);
+			}
+			
+			if(currentHair >= 21 && currentHair <= 24){
+				hair[currentHair].setBounds(600, 415, 100, 100);
+			}
+		}
+		else{
+			hair[currentHair].setBounds(600, 430, 100, 100);
+		}
 		hair[currentHair].draw(batch);
 		
 		if(currentGlasses != -1){
@@ -302,6 +341,8 @@ public class CreateAvatarScreen implements Screen {
 	private void update(float delta) {
 		cam.update();
 		startTimer += delta;
+		
+		
 	}
 
 	@Override
