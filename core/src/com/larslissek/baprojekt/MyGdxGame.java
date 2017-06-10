@@ -11,7 +11,7 @@ public class MyGdxGame extends Game {
 	@Override
 	public void create () {
 		Assets.load();
-		setScreen(new InterviewScreen(this));
+		setScreen(new CreateAvatarScreen(this));
 	}
 
 	@Override

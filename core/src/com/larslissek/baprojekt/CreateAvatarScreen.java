@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class CreateAvatarScreen implements Screen {
@@ -31,7 +30,6 @@ public class CreateAvatarScreen implements Screen {
 	
 	FreeTypeFontGenerator generator;
 	Texture background;
-	Texture friendbook;
 	
 	ImageButton friendbookButton;
 	
@@ -75,24 +73,11 @@ public class CreateAvatarScreen implements Screen {
 		font.setColor(0, 0, 0, 1);
 		
 		background = new Texture(Gdx.files.internal("DWDcover2.jpg"));
-		friendbook = new Texture(Gdx.files.internal("freundebuch.png"));
 		
 		
 		stage = new Stage(port, batch);
 		Gdx.input.setInputProcessor(stage);
 		
-		drawable = new TextureRegionDrawable(new TextureRegion(friendbook));
-		friendbookButton = new ImageButton(drawable);
-		friendbookButton.setSize(400, 250);
-		friendbookButton.setPosition(MyGdxGame.V_WIDTH / 2 - friendbookButton.getWidth() / 2, 120);
-		
-		stage.addActor(friendbookButton);
-		
-		friendbookButton.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor actor) {
-				game.setScreen(new InterviewScreen(game));
-			}
-		});
 		
 		blondesMaedchen = new Texture(Gdx.files.internal("blondesmaedchen.png"));
 		maedchen = new Sprite(blondesMaedchen);
@@ -102,8 +87,6 @@ public class CreateAvatarScreen implements Screen {
 		
 		sound = Assets.profileCreationSound;
 		
-		friendbookButton.setDisabled(true);
-		friendbookButton.setVisible(false);
 	}
 
 	@Override
@@ -117,11 +100,8 @@ public class CreateAvatarScreen implements Screen {
 		
 		batch.begin();
 		batch.draw(background, 0, 0);
-		maedchen.draw(batch, maedchenalpha);
+		//maedchen.draw(batch, maedchenalpha);
 		
-		
-		friendbookButton.setSize(300, 200);
-		friendbookButton.setPosition(MyGdxGame.V_WIDTH / 2 - friendbookButton.getWidth() / 2, 120);
 		
 		if(showBubble){
 			batch.draw(speechbubble, -30, 300, 700, 200);
@@ -140,42 +120,6 @@ public class CreateAvatarScreen implements Screen {
 	private void update(float delta) {
 		cam.update();
 		startTimer += delta;
-		
-		if(startTimer >= 2 && maedchenalpha + delta / 4 <= 0.99){
-			maedchenalpha += delta / 4;
-		}
-		
-		else if(startTimer >= 2 && !soundStarted){
-			sound.play();
-			showBubble = true;
-			soundStarted = true;
-			currentTextline = "Hi, dich sehe ich hier\nzum ersten Mal.";
-		}
-		
-		
-		
-		if(startTimer >= 21){
-			currentTextline = "Berühre mein Freundebuch,\num einen Eintrag vorzunehmen!";
-		}
-		
-		else if(startTimer >= 17.5){
-			currentTextline = "Erzähl mir doch ein\nwenig von dir!";
-		}
-		
-		else if(startTimer >= 14){
-			currentTextline = "Ich würde dich gerne\nkennenlernen!";
-		}
-		
-		else if(startTimer >= 11){
-			currentTextline = "Mein Name ist Ella.";
-		}
-		
-		
-		if(startTimer >= 25.5){
-			friendbookButton.setDisabled(false);
-			friendbookButton.setVisible(true);
-		}
-		
 	}
 
 	@Override
