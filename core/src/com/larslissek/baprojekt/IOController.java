@@ -28,11 +28,12 @@ public class IOController {
 	}
 	
 	public static int getProfileScore(){
-		return prefs.getInteger("profilescore", -1);
+		return prefs.getInteger("profilescore", 0);
 	}
 	
 	public static void addToProfileScore(int amount){
-		prefs.putInteger("profilescore", prefs.getInteger("profilescore", -1) + amount);
+		prefs.putInteger("profilescore", prefs.getInteger("profilescore", 0) + amount);
+		prefs.flush();
 	}
 	
 	public static void deleteProfile(){
@@ -43,6 +44,30 @@ public class IOController {
 	
 	public static String getProfile1Name(){
 		return prefs.getString("profilename", "Error");
+	}
+	
+	public static void saveAvatar(int face, int hair, int shirt, int glasses){
+		prefs.putInteger("face", face);
+		prefs.putInteger("hair", hair);
+		prefs.putInteger("shirt", shirt);
+		prefs.putInteger("glasses", glasses);
+		prefs.flush();
+	}
+	
+	public static int[] getAvatar(){
+		int[] result = new int[4];
+		
+		result[0] = prefs.getInteger("face");
+		result[1] = prefs.getInteger("hair");
+		result[2] = prefs.getInteger("shirt");
+		result[3] = prefs.getInteger("glasses");
+		
+		return result;
+	}
+	
+	public static void saveSchool(int school){
+		prefs.putInteger("school", school);
+		prefs.flush();
 	}
 }
 

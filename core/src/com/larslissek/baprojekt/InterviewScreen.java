@@ -84,6 +84,9 @@ public class InterviewScreen implements Screen {
 	
 	private float nextScreenTimer = 0;
 	
+	String name = "";
+	int school;
+	
 	public InterviewScreen(MyGdxGame game) {
 		this.game = game;
 	}
@@ -132,6 +135,8 @@ public class InterviewScreen implements Screen {
 				school3Button.setVisible(false);
 				
 				isSchoolPicked = true;
+				
+				school = 0;
 			}
 		});
 		
@@ -153,6 +158,8 @@ public class InterviewScreen implements Screen {
 				school3Button.setVisible(false);
 				
 				isSchoolPicked = true;
+				
+				school = 1;
 			}
 		});
 		
@@ -174,6 +181,8 @@ public class InterviewScreen implements Screen {
 				school2Button.setVisible(false);
 				
 				isSchoolPicked = true;
+				
+				school = 2;
 			}
 		});
 		
@@ -365,7 +374,7 @@ public class InterviewScreen implements Screen {
 		}
 		
 		if(nextScreenTimer > 4){
-			game.setScreen(new CreateAvatarScreen(game));
+			game.setScreen(new CreateAvatarScreen(game, playerName, school));
 		}
 		
 		

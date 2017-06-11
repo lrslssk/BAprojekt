@@ -1,7 +1,5 @@
 package com.larslissek.baprojekt;
 
-import sun.font.FontManager;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -12,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -24,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class CreateAvatarScreen implements Screen {
@@ -83,8 +83,15 @@ public class CreateAvatarScreen implements Screen {
 	TextButton nextHairButton;
 	TextButton previousHairButton;
 	
-	public CreateAvatarScreen(MyGdxGame game) {
+	ImageButton confirmButton;
+	
+	String name = "";
+	int school;
+	
+	public CreateAvatarScreen(MyGdxGame game, String name, int school) {
 		this.game = game;
+		this.name = name;
+		this.school = school;
 	}
 	
 	@Override
@@ -277,6 +284,23 @@ public class CreateAvatarScreen implements Screen {
 		hairLabel.setPosition(590, 176);
 		shirtLabel.setPosition(590, 116);
 		glassesLabel.setPosition(583, 55);
+		
+		
+		drawable = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/gruenerhaken.png"))));
+		confirmButton = new ImageButton(drawable);
+		confirmButton.setSize(100, 100);
+		confirmButton.setPosition(1120, 40);
+		
+		stage.addActor(confirmButton);
+		
+		confirmButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				IOController.saveAvatar(currentFace, currentHair, currentShirt, currentGlasses);
+				IOController.createProfile(name);
+				IOController.saveSchool(school);
+				game.setScreen(new ProfileSelectionScreen(game));
+			}
+		});
 	}
 
 	@Override

@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class ProfileSelectionScreen implements Screen {
@@ -57,6 +56,8 @@ public class ProfileSelectionScreen implements Screen {
 	
 	String profile1Name = "";
 	String profile1Score = "";
+	
+	ImageButton deleteProfileButton;
 	
 	public ProfileSelectionScreen(MyGdxGame game) {
 		this.game = game;
@@ -110,6 +111,24 @@ public class ProfileSelectionScreen implements Screen {
 		
 		profile1Button.setDisabled(true);
 		profile1Button.setVisible(false);
+		
+		
+		drawable = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/redcrossbutton.png"))));
+		deleteProfileButton = new ImageButton(drawable);
+		deleteProfileButton.setSize(75, 75);
+		deleteProfileButton.setPosition(900, 316);
+		
+		stage.addActor(deleteProfileButton);
+		
+		deleteProfileButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				IOController.deleteProfile();
+				game.setScreen(new MainMenu(game));
+			}
+		});
+		
+		deleteProfileButton.setDisabled(true);
+		deleteProfileButton.setVisible(false);
 	}
 
 	@Override
@@ -178,6 +197,9 @@ public class ProfileSelectionScreen implements Screen {
 		if(startTimer >= 13){
 			profile1Button.setDisabled(false);
 			profile1Button.setVisible(true);
+			
+			deleteProfileButton.setDisabled(false);
+			deleteProfileButton.setVisible(true);
 			
 			profile1Name = IOController.getProfile1Name();
 			profile1Score = IOController.getProfileScore() + "";
