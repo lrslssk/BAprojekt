@@ -59,6 +59,12 @@ public class ProfileSelectionScreen implements Screen {
 	
 	ImageButton deleteProfileButton;
 	
+	
+	Sprite face;
+	Sprite hair;
+	Sprite glasses;
+	Sprite shirt;
+	
 	public ProfileSelectionScreen(MyGdxGame game) {
 		this.game = game;
 	}
@@ -88,8 +94,8 @@ public class ProfileSelectionScreen implements Screen {
 		
 		drawable = new TextureRegionDrawable(new TextureRegion(greyProfileBackground));
 		profile1Button = new ImageButton(drawable);
-		profile1Button.setSize(400, 250);
-		profile1Button.setPosition(MyGdxGame.V_WIDTH / 2 - profile1Button.getWidth() / 2, 120);
+		profile1Button.setSize(400, 300);
+		profile1Button.setPosition(MyGdxGame.V_WIDTH / 2 - profile1Button.getWidth() / 2, MyGdxGame.V_HEIGHT / 2 - profile1Button.getHeight() / 2 - 35);
 		
 		stage.addActor(profile1Button);
 		
@@ -129,6 +135,33 @@ public class ProfileSelectionScreen implements Screen {
 		
 		deleteProfileButton.setDisabled(true);
 		deleteProfileButton.setVisible(false);
+		
+		face = Assets.faces[IOController.getAvatar()[0]];
+		hair = Assets.hair[IOController.getAvatar()[1]];
+		shirt = Assets.shirts[IOController.getAvatar()[2]];
+		
+		if(IOController.getAvatar()[3] != -1)
+		glasses = Assets.glasses[IOController.getAvatar()[3]];
+		
+		
+		face.setBounds(490, 320, face.getWidth(), face.getHeight());
+		
+		if(IOController.getAvatar()[1] >= 13 && IOController.getAvatar()[1] <= 16)
+			hair.setBounds(488, 320, hair.getWidth(), hair.getHeight());
+		
+		else if(IOController.getAvatar()[1] >= 17 && IOController.getAvatar()[1] <= 20)
+			hair.setBounds(475, 310, hair.getWidth(), hair.getHeight());
+		
+		else if(IOController.getAvatar()[1] >= 21 && IOController.getAvatar()[1] <= 25)
+			hair.setBounds(490, 330, hair.getWidth(), hair.getHeight());
+		
+		else
+			hair.setBounds(495, 360, hair.getWidth(), hair.getHeight());
+		
+		if(glasses != null)
+		glasses.setBounds(500, 350, glasses.getWidth(), glasses.getHeight());
+		
+		shirt.setBounds(517, 272, 60, 60);
 	}
 
 	@Override
@@ -145,9 +178,6 @@ public class ProfileSelectionScreen implements Screen {
 		maedchen.draw(batch, maedchenalpha);
 		
 		
-		profile1Button.setSize(600, 200);
-		profile1Button.setPosition(MyGdxGame.V_WIDTH / 2 - profile1Button.getWidth() / 2, MyGdxGame.V_HEIGHT / 2 - profile1Button.getHeight() / 2);
-		
 		if(showBubble){
 			batch.draw(speechbubble, -30, 300, 700, 200);
 			font.draw(batch, currentTextline  + "", 50, 465);
@@ -161,12 +191,26 @@ public class ProfileSelectionScreen implements Screen {
 
 		
 		batch.begin();
-		font.draw(batch, profile1Name, 650, 420);
+		font.draw(batch, profile1Name, 680, 420);
 		
 		if(!profile1Name.equals(""))
-		font.draw(batch, "Level:", 650, 360);
+		font.draw(batch, "Level:", 680, 360);
 		
-		font.draw(batch, profile1Score, 680, 320);
+		font.draw(batch, profile1Score, 720, 320);
+		
+		if(deleteProfileButton.isVisible()){
+			
+			
+			face.draw(batch);
+			hair.draw(batch);
+			
+			if(glasses != null)
+			glasses.draw(batch);
+			
+			shirt.draw(batch);
+		}
+		
+		
 		batch.end();
 		
 		
