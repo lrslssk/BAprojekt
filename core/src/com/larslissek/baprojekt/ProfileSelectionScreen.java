@@ -71,6 +71,10 @@ public class ProfileSelectionScreen implements Screen {
 	
 	@Override
 	public void show() {
+		
+		//reload Assets to fix Sprites Bounds
+		Assets.load();
+		
 		cam = new OrthographicCamera();
 		port = new StretchViewport(MyGdxGame.V_WIDTH, MyGdxGame.V_HEIGHT, cam);
 		cam.position.set(port.getWorldWidth() / 2, port.getWorldHeight() / 2, 0);
@@ -191,12 +195,12 @@ public class ProfileSelectionScreen implements Screen {
 
 		
 		batch.begin();
-		font.draw(batch, profile1Name, 680, 420);
+		font.draw(batch, profile1Name, 640, 420);
 		
 		if(!profile1Name.equals(""))
-		font.draw(batch, "Level:", 680, 360);
+		font.draw(batch, "Level:", 640, 360);
 		
-		font.draw(batch, profile1Score, 720, 320);
+		font.draw(batch, profile1Score, 680, 320);
 		
 		if(deleteProfileButton.isVisible()){
 			

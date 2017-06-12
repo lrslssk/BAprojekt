@@ -1,5 +1,7 @@
 package com.larslissek.baprojekt;
 
+import java.util.Arrays;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -121,10 +123,10 @@ public class CreateAvatarScreen implements Screen {
 		
 		speechbubble = new Texture(Gdx.files.internal("speechbubble.png"));
 		
-		faces = Assets.faces;
-		hair = Assets.hair;
-		glasses = Assets.glasses;
-		shirts = Assets.shirts;
+		faces = Arrays.copyOf(Assets.faces, Assets.faces.length);
+		hair = Arrays.copyOf(Assets.hair, Assets.hair.length);
+		glasses = Arrays.copyOf(Assets.glasses, Assets.glasses.length);
+		shirts = Arrays.copyOf(Assets.shirts, Assets.shirts.length);
 		
 		
 		skin = new Skin();
