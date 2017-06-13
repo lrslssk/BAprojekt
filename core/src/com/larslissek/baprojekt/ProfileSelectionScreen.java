@@ -105,8 +105,7 @@ public class ProfileSelectionScreen implements Screen {
 		
 		profile1Button.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				//game.setScreen(new SelectAvatarScreen(game));
-				System.out.println("button pressed");
+				game.setScreen(new WorldmapScreen(game));
 			}
 		});
 		
