@@ -69,6 +69,11 @@ public class IOController {
 		prefs.putInteger("school", school);
 		prefs.flush();
 	}
+	
+	public static void saveCity(String cityname){
+		prefs.putString("cityname", cityname);
+		prefs.flush();
+	}
 }
 
 

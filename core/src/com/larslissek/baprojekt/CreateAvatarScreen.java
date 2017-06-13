@@ -297,10 +297,7 @@ public class CreateAvatarScreen implements Screen {
 		
 		confirmButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				IOController.saveAvatar(currentFace, currentHair, currentShirt, currentGlasses);
-				IOController.createProfile(name);
-				IOController.saveSchool(school);
-				game.setScreen(new ProfileSelectionScreen(game));
+				game.setScreen(new PickCityScreen(game, currentFace, currentHair, currentShirt, currentGlasses, name, school));
 			}
 		});
 	}

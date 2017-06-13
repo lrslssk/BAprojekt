@@ -253,7 +253,7 @@ public class InterviewScreen implements Screen {
 	        public void changed (ChangeEvent event, Actor actor) {
 	        	String name = nameField.getText();
 	        	
-	        	if(name.length() <= 10){
+	        	if(name.length() <= 10 && !name.equals("")){
 	        		playerName = name;
 	        		nameEntered = true;
 	        	}
