@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class HobbyGameScreen implements Screen {
@@ -46,6 +45,7 @@ public class HobbyGameScreen implements Screen {
 	Music sound;
 	private boolean soundStarted = false;
 	private boolean gameStarted = false;
+	private boolean gameEnded = false;
 	
 	Stage stage;
 	TextButtonStyle style;
@@ -56,6 +56,20 @@ public class HobbyGameScreen implements Screen {
 	
 	Skin skin;
 	private TextureAtlas atlas;
+	
+	Sprite lesen;
+	Sprite fahrradfahren;
+	Sprite fussball;
+	Sprite klettern;
+	Sprite schwimmen;
+	Sprite segeln;
+	Sprite tennis;
+	
+	int currentPicture = 0;
+	
+	Sprite paul;
+	private float endGameTimer = 0;
+	
 	
 	public HobbyGameScreen(MyGdxGame game) {
 		this.game = game;
@@ -106,7 +120,9 @@ public class HobbyGameScreen implements Screen {
 		
 		answer1button.addListener(new ChangeListener() {
 	        public void changed (ChangeEvent event, Actor actor) {
-
+	        	if(currentPicture == 1 || currentPicture == 4){
+	        		currentPicture++;
+	        	}
 	        }
 	    });
 		
@@ -117,7 +133,9 @@ public class HobbyGameScreen implements Screen {
 		
 		answer2button.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				
+	        	if(currentPicture == 0 || currentPicture == 2){
+	        		currentPicture++;
+	        	}
 			}
 		});
 		
@@ -128,9 +146,22 @@ public class HobbyGameScreen implements Screen {
 		
 		answer3button.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				
+	        	if(currentPicture == 3 || currentPicture == 5 || currentPicture == 6){
+	        		currentPicture++;
+	        	}
 			}
 		});
+		
+		answer1button.setSize(300, 75);
+		answer1button.setPosition(MyGdxGame.V_WIDTH / 3 - MyGdxGame.V_WIDTH / 6 - answer1button.getWidth() / 2, 40);
+		
+		answer2button.setSize(300, 75);
+		answer2button.setPosition(2 * MyGdxGame.V_WIDTH / 3 - MyGdxGame.V_WIDTH / 6 - answer2button.getWidth() / 2, 40);
+		
+		answer3button.setSize(300, 75);
+		answer3button.setPosition(3 * MyGdxGame.V_WIDTH / 3 - MyGdxGame.V_WIDTH / 6 - answer3button.getWidth() / 2, 40);
+		
+		
 		
 		answer1button.setVisible(false);
 		answer1button.setDisabled(true);
@@ -142,6 +173,25 @@ public class HobbyGameScreen implements Screen {
 		answer3button.setDisabled(true);
 		
 		
+		
+		lesen = new Sprite(new Texture(Gdx.files.internal("hobbygame/book.jpg")));
+		fahrradfahren = new Sprite(new Texture(Gdx.files.internal("hobbygame/fahrradfahren.jpg")));
+		fussball = new Sprite(new Texture(Gdx.files.internal("hobbygame/fussball.jpg")));
+		klettern = new Sprite(new Texture(Gdx.files.internal("hobbygame/klettern.jpg")));
+		schwimmen = new Sprite(new Texture(Gdx.files.internal("hobbygame/schwimmen.jpg")));
+		segeln = new Sprite(new Texture(Gdx.files.internal("hobbygame/segeln.jpg")));
+		tennis = new Sprite(new Texture(Gdx.files.internal("hobbygame/tennis.jpg")));
+		
+		lesen.setBounds(165, 280, 200, 200);
+		fahrradfahren.setBounds(290, 60, 200, 200);
+		fussball.setBounds(415, 280, 200, 200);
+		klettern.setBounds(540, 60, 200, 200);
+		schwimmen.setBounds(665, 280, 200, 200);
+		segeln.setBounds(790, 60, 200, 200);
+		tennis.setBounds(915, 280, 200, 200);
+		
+		
+		paul = new Sprite(new Texture(Gdx.files.internal("paul.png")));
 	}
 
 	@Override
@@ -157,20 +207,96 @@ public class HobbyGameScreen implements Screen {
 		batch.begin();
 		background.draw(batch);
 		
+		if (!gameStarted) {
+			lesen.draw(batch);
+			fahrradfahren.draw(batch);
+			fussball.draw(batch);
+			klettern.draw(batch);
+			schwimmen.draw(batch);
+			segeln.draw(batch);
+			tennis.draw(batch);
+		}
+		
+		if(gameStarted && currentPicture == 0){
+			lesen.setBounds(280, 200, 700, 400);
+			lesen.draw(batch);
+			
+			answer1button.setText("Schwimmen");
+			answer2button.setText("Lesen");
+			answer3button.setText("Tennis");
+		}
+		
+		else if(gameStarted && currentPicture == 1){
+			fahrradfahren.setBounds(280, 200, 700, 400);
+			fahrradfahren.draw(batch);
+			
+			answer1button.setText("Radfahren");
+			answer2button.setText("Segeln");
+			answer3button.setText("Klettern");
+		}
+		
+		else if(gameStarted && currentPicture == 2){
+			fussball.setBounds(280, 200, 700, 400);
+			fussball.draw(batch);
+			
+			answer1button.setText("Laufen");
+			answer2button.setText("Fußball");
+			answer3button.setText("Badminton");
+		}
+		
+		else if(gameStarted && currentPicture == 3){
+			klettern.setBounds(280, 200, 700, 400);
+			klettern.draw(batch);
+			
+			answer1button.setText("Billard");
+			answer2button.setText("Hochsprung");
+			answer3button.setText("Klettern");
+		}
+		
+		else if(gameStarted && currentPicture == 4){
+			schwimmen.setBounds(280, 200, 700, 400);
+			schwimmen.draw(batch);
+			
+			answer1button.setText("Schwimmen");
+			answer2button.setText("Eislaufen");
+			answer3button.setText("Reisen");
+		}
+		
+		else if(gameStarted && currentPicture == 5){
+			segeln.setBounds(280, 200, 700, 400);
+			segeln.draw(batch);
+			
+			answer1button.setText("Tretboot fahren");
+			answer2button.setText("Schwimmen");
+			answer3button.setText("Segeln");
+		}
+		
+		else if(gameStarted && currentPicture == 6){
+			tennis.setBounds(280, 200, 700, 400);
+			tennis.draw(batch);
+			
+			answer1button.setText("Basketball");
+			answer2button.setText("Handball");
+			answer3button.setText("Tennis");
+		}
+		
+		
 		
 		if(showBubble){
 			batch.draw(speechbubble, 270, 480, 700, 200);
 			font.draw(batch, currentTextline  + "", 350, 645);
 		}
 		
-		answer1button.setSize(300, 75);
-		answer1button.setPosition(MyGdxGame.V_WIDTH / 3 - MyGdxGame.V_WIDTH / 6 - answer1button.getWidth() / 2, 40);
 		
-		answer2button.setSize(300, 75);
-		answer2button.setPosition(2 * MyGdxGame.V_WIDTH / 3 - MyGdxGame.V_WIDTH / 6 - answer2button.getWidth() / 2, 40);
-		
-		answer3button.setSize(300, 75);
-		answer3button.setPosition(3 * MyGdxGame.V_WIDTH / 3 - MyGdxGame.V_WIDTH / 6 - answer3button.getWidth() / 2, 40);
+		if(gameEnded){
+			showBubble = true;
+			currentTextline = "Sehr gut gemacht!\nVielen Dank für deine Hilfe!";
+			
+			paul.setPosition(500, 100);
+			paul.draw(batch);
+			
+			endGameTimer += delta;
+		}
 		
 		batch.end();
 		
@@ -183,6 +309,8 @@ public class HobbyGameScreen implements Screen {
 	}
 	
 	private void update(float delta) {
+		
+		
 		cam.update();
 		background.setBounds(0, 0, 1280, 720);
 		
@@ -198,14 +326,14 @@ public class HobbyGameScreen implements Screen {
 		}
 		
 		
-		else if(startTimer >= 12){
+		else if(startTimer >= 12 && !gameEnded){
 			currentTextline = "";
 			showBubble = false;
 			gameStarted  = true;
 		}
 		
 		
-		else if(startTimer >= 8){
+		else if(startTimer >= 8 && !gameEnded){
 			currentTextline = "Hilfst du mir,\ndie Hobbys zu sortieren?";
 		}
 		
@@ -218,6 +346,29 @@ public class HobbyGameScreen implements Screen {
 			
 			answer3button.setVisible(true);
 			answer3button.setDisabled(false);
+		}
+		
+		if(currentPicture >= 7){
+			
+			answer1button.setVisible(false);
+			answer1button.setDisabled(true);
+			
+			answer2button.setVisible(false);
+			answer2button.setDisabled(true);
+			
+			answer3button.setVisible(false);
+			answer3button.setDisabled(true);
+			
+			gameEnded = true;
+		}
+		
+		
+		if(endGameTimer >= 9){
+			//TODO Set Screen to HobbyPickScreen
+		}
+		
+		if(endGameTimer >= 3){
+			currentTextline = "Welches ist dein\nLieblingshobby?";
 		}
 		
 	}
