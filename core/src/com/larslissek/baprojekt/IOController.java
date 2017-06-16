@@ -39,6 +39,7 @@ public class IOController {
 	public static void deleteProfile(){
 		prefs.remove("existingprofile");
 		prefs.remove("profilename");
+		prefs.remove("school");
 		prefs.flush();
 	}
 	
@@ -68,6 +69,10 @@ public class IOController {
 	public static void saveSchool(int school){
 		prefs.putInteger("school", school);
 		prefs.flush();
+	}
+	
+	public static int getSchool(){
+		return prefs.getInteger("school", 0);
 	}
 	
 	public static void saveCity(String cityname){

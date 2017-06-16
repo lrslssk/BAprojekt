@@ -410,7 +410,7 @@ public class BagPackGame implements Screen {
 		}
 		
 		if(endGameTimer >= 3){
-			game.setScreen(new MainMenu(game));
+			game.setScreen(new PlayerHomeScreenAfterGame(game));
 		}
 	}
 

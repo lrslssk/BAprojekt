@@ -1,7 +1,6 @@
 package com.larslissek.baprojekt;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,12 +10,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
-public class WorldmapScreen implements Screen {
+public class NightWorldMap implements Screen {
 
 	
 	MyGdxGame game;
@@ -27,7 +24,8 @@ public class WorldmapScreen implements Screen {
 	
 	FreeTypeFontGenerator generator;
 	
-	Texture background;
+	Sprite backgroundDay;
+	Sprite backgroundNight;
 	
 	//debug
 	ShapeRenderer renderer;
@@ -37,20 +35,15 @@ public class WorldmapScreen implements Screen {
 	Rectangle towerRectangle;
 	Rectangle carnivalRectangle;
 	
-	Sprite redArrow;
+	float alphaDay = 1;
+	float alphaNight = 0;
 	
-	int nextLocation;
-	//0 == Spielerhaus
-	//1 == Schule
-	//2 == Turm
-	//3 == Kirmesplatz
+	boolean dayToNight = true;
+	private float endScreenTimer;
 	
-	float arrowYpos;
-	boolean arrowMovingUp = true;
 	
-	public WorldmapScreen(MyGdxGame game, int nextLocation) {
+	public NightWorldMap(MyGdxGame game) {
 		this.game = game;
-		this.nextLocation = nextLocation;
 	}
 	
 	@Override
@@ -66,7 +59,8 @@ public class WorldmapScreen implements Screen {
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 29;
 		
-		background = new Texture(Gdx.files.internal("worldmapv1.png"));
+		backgroundDay = new Sprite(new Texture(Gdx.files.internal("worldmapv1.png")));
+		backgroundNight = new Sprite(new Texture(Gdx.files.internal("worldmapnight.png")));
 		
 		homeRectangle = new Rectangle(170, 280, 170, 170);
 		schoolRectangle = new Rectangle(505, 330, 290, 170);
@@ -77,26 +71,6 @@ public class WorldmapScreen implements Screen {
 		
 		//Stop back key from quitting the game
 		Gdx.input.setCatchBackKey(true);
-		
-		redArrow = new Sprite(new Texture(Gdx.files.internal("arrow.png")));
-		redArrow.rotate(-90f);
-		
-		switch (nextLocation) {
-		case 0:
-			arrowYpos = -130f;
-			break;
-		case 1:
-			arrowYpos = -95f;
-			break;
-		case 2:
-			arrowYpos = -130f;
-			break;
-		case 3:
-			arrowYpos = -130f;
-			break;
-		default:
-			break;
-		}
 	}
 
 	@Override
@@ -111,27 +85,9 @@ public class WorldmapScreen implements Screen {
 		renderer.setProjectionMatrix(cam.combined);
 		
 		batch.begin();
-		batch.draw(background, 0, 0);
 		
-		switch (nextLocation) {
-		case 0:
-			redArrow.setBounds(97, arrowYpos, 100, 70);
-			break;
-		case 1:
-			redArrow.setBounds(475, arrowYpos, 100, 70);
-			break;
-		case 2:
-			redArrow.setBounds(97, arrowYpos, 100, 70);
-			break;
-		case 3:
-			redArrow.setBounds(97, arrowYpos, 100, 70);
-			break;
-		default:
-			break;
-		}
-		
-		
-		redArrow.draw(batch);
+		backgroundDay.draw(batch, alphaDay);
+		backgroundNight.draw(batch, alphaNight);
 		
 		batch.end();
 		
@@ -148,52 +104,39 @@ public class WorldmapScreen implements Screen {
 	private void update(float delta) {
 		cam.update();
 		
-		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.ESCAPE)){
-			  game.setScreen(new MainMenu(game));
-		}
-		
-		if(nextLocation == 0){
-			if(arrowYpos <= -130f && !arrowMovingUp)
-				arrowMovingUp = true;
-				
-			if(arrowYpos >= -100f && arrowMovingUp)
-				arrowMovingUp = false;
-			
-			if(arrowMovingUp)
-				arrowYpos += delta * 25;
-			
-			else
-				arrowYpos -= delta * 25;
-		}
-		
-		else if(nextLocation == 1){
-			if(arrowYpos <= -110f && !arrowMovingUp)
-				arrowMovingUp = true;
-			
-			if(arrowYpos >= -80f && arrowMovingUp)
-				arrowMovingUp = false;
-			
-			if(arrowMovingUp)
-				arrowYpos += delta * 25;
-			
-			else
-				arrowYpos -= delta * 25;
-		}
-		
-		if(Gdx.input.isTouched()){
-			float x = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).x;
-			float y = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).y;
-			
-			if(homeRectangle.contains(x, y) && nextLocation == 0){
-				//TODO Play "success" sound and wait 2 Seconds
-				game.setScreen(new PlayerHomeScreen(game));
+		if(dayToNight){
+			if(alphaDay > 0f){
+				alphaDay -= delta / 5;
 			}
 			
-			if(schoolRectangle.contains(x, y) && nextLocation == 1){
-				//TODO Play "success" sound and wait 2 Seconds
-				game.setScreen(new SchoolScreen(game));
+			else if(alphaNight + delta / 5 < 0.99f){
+				alphaNight += delta / 5;
+			}
+			
+			else{
+				dayToNight = false;
 			}
 		}
+		
+		if(!dayToNight){
+			if(alphaNight - delta / 5 > 0f){
+				alphaNight -= delta / 5;
+			}
+			
+			else if(alphaDay + delta / 5 < 0.99f){
+				alphaDay += delta / 5;
+			}
+			
+			else{
+				endScreenTimer += delta;
+			}
+		}
+		
+		
+		if(endScreenTimer >= 3){
+			game.setScreen(new WorldmapScreen(game, 1));
+		}
+		
 	}
 
 	@Override
