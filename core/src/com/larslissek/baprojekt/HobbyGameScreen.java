@@ -364,7 +364,7 @@ public class HobbyGameScreen implements Screen {
 		
 		
 		if(endGameTimer >= 9){
-			//TODO Set Screen to HobbyPickScreen
+			game.setScreen(new PickHobbyScreen(game));
 		}
 		
 		if(endGameTimer >= 3){
