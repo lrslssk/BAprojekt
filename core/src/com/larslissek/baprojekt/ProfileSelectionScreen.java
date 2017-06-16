@@ -105,6 +105,10 @@ public class ProfileSelectionScreen implements Screen {
 		
 		profile1Button.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
+				profile1Button.setDisabled(true);
+				profile1Button.remove();
+				deleteProfileButton.setDisabled(true);
+				deleteProfileButton.remove();
 				game.setScreen(new WorldmapScreen(game, 0));
 			}
 		});
@@ -276,7 +280,7 @@ public class ProfileSelectionScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		
+		stage.dispose();
 	}
 
 }

@@ -11,7 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class WorldmapScreen implements Screen {
@@ -103,7 +105,7 @@ public class WorldmapScreen implements Screen {
 //		renderer.setAutoShapeType(true);
 //		renderer.begin();
 //		renderer.set(ShapeType.Line);
-//		renderer.rect(890, 80, 380, 210);
+//		renderer.rect(homeRectangle.x, homeRectangle.y, homeRectangle.width, homeRectangle.height);
 //		renderer.end();
 		
 		Gdx.graphics.setTitle("BAprojekt | " + Gdx.graphics.getFramesPerSecond() + " FPS");
@@ -131,7 +133,11 @@ public class WorldmapScreen implements Screen {
 		}
 		
 		if(Gdx.input.isTouched()){
-			if(homeRectangle.contains(Gdx.input.getX(), Gdx.input.getY())){
+			
+			float x = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).x;
+			float y = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).y;
+			
+			if(homeRectangle.contains(x, y)){
 				//TODO Play "success" sound and wait 2 Seconds
 				game.setScreen(new PlayerHomeScreen(game));
 			}
