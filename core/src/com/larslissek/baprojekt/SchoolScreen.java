@@ -2,9 +2,11 @@ package com.larslissek.baprojekt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -24,6 +26,20 @@ public class SchoolScreen implements Screen {
 	
 	Sprite background;
 	
+	
+	Sprite paul;
+	float startTimer = 0;
+	private float paulAlpha = 0;
+	
+	private Texture speechbubble;
+	
+	BitmapFont font;
+	private String currentTextline = "";
+	private boolean showBubble = false;
+	
+	Music sound;
+	private boolean soundStarted = false;
+	
 	public SchoolScreen(MyGdxGame game) {
 		this.game = game;
 	}
@@ -37,9 +53,12 @@ public class SchoolScreen implements Screen {
 		
 		batch = new SpriteBatch();
 		
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/ocraextended.ttf"));
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/ocraextended2.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 29;
+		
+		font = generator.generateFont(parameter);
+		font.setColor(0, 0, 0, 1);
 		
 		switch (IOController.getSchool()) {
 		case 0:
@@ -57,6 +76,14 @@ public class SchoolScreen implements Screen {
 		}
 		
 		
+		paul = new Sprite(new Texture(Gdx.files.internal("paul.png")));
+		paul.setPosition(100, 20);
+		
+		speechbubble = new Texture(Gdx.files.internal("speechbubble.png"));
+		
+		sound = Assets.profileCreationSound;
+		
+		
 	}
 
 	@Override
@@ -71,6 +98,14 @@ public class SchoolScreen implements Screen {
 		
 		batch.begin();
 		background.draw(batch);
+		
+		paul.draw(batch, paulAlpha);
+		
+		if(showBubble){
+			batch.draw(speechbubble, -30, 350, 700, 200);
+			font.draw(batch, currentTextline  + "", 50, 515);
+		}
+		
 		batch.end();
 		
 		
@@ -80,6 +115,38 @@ public class SchoolScreen implements Screen {
 	private void update(float delta) {
 		cam.update();
 		background.setBounds(0, 0, 1280, 720);
+		
+		startTimer += delta;
+		
+		if(startTimer >= 2 && paulAlpha + delta / 4 <= 0.99){
+			paulAlpha += delta / 4;
+		}
+		
+		else if(startTimer >= 2 && !soundStarted){
+			//TODO record right soundfile
+			//sound.play();
+			showBubble = true;
+			soundStarted = true;
+			currentTextline = "Hi, mein Name ist Paul.";
+		}
+		
+		
+		else if(startTimer >= 21.5){
+			game.setScreen(new HobbyGameScreen(game));
+		}
+		
+		else if(startTimer >= 17.5){
+			currentTextline = "Verrate mir deine Hobbys,\nvielleicht werden wir\nja Freunde.";
+		}
+		
+		else if(startTimer >= 14){
+			currentTextline = "Ich würde dich gerne\nkennenlernen!";
+		}
+		
+		else if(startTimer >= 11){
+			currentTextline = "Du bist neu hier\nan der Schule, oder?";
+		}
+		
 	}
 
 	@Override
