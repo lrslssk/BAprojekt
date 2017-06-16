@@ -6,11 +6,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
@@ -35,8 +35,20 @@ public class WorldmapScreen implements Screen {
 	Rectangle towerRectangle;
 	Rectangle carnivalRectangle;
 	
-	public WorldmapScreen(MyGdxGame game) {
+	Sprite redArrow;
+	
+	int nextLocation;
+	//0 == Spielerhaus
+	//1 == Schule
+	//2 == Turm
+	//3 == Kirmesplatz
+	
+	float arrowYpos = -130f;
+	boolean arrowMovingUp = true;
+	
+	public WorldmapScreen(MyGdxGame game, int nextLocation) {
 		this.game = game;
+		this.nextLocation = nextLocation;
 	}
 	
 	@Override
@@ -63,6 +75,9 @@ public class WorldmapScreen implements Screen {
 		
 		//Stop back key from quitting the game
 		Gdx.input.setCatchBackKey(true);
+		
+		redArrow = new Sprite(new Texture(Gdx.files.internal("arrow.png")));
+		redArrow.rotate(-90f);
 	}
 
 	@Override
@@ -79,6 +94,8 @@ public class WorldmapScreen implements Screen {
 		batch.begin();
 		batch.draw(background, 0, 0);
 		
+		redArrow.setBounds(97, arrowYpos, 100, 70);
+		redArrow.draw(batch);
 		
 		batch.end();
 		
@@ -97,7 +114,28 @@ public class WorldmapScreen implements Screen {
 		
 		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.ESCAPE)){
 			  game.setScreen(new MainMenu(game));
+		}
+		
+		if(nextLocation == 0){
+			if(arrowYpos <= -130f && !arrowMovingUp)
+				arrowMovingUp = true;
+				
+			if(arrowYpos >= -100f && arrowMovingUp)
+				arrowMovingUp = false;
+			
+			if(arrowMovingUp)
+				arrowYpos += delta * 25;
+			
+			else
+				arrowYpos -= delta * 25;
+		}
+		
+		if(Gdx.input.isTouched()){
+			if(homeRectangle.contains(Gdx.input.getX(), Gdx.input.getY())){
+				//TODO Play "success" sound and wait 2 Seconds
+				game.setScreen(new PlayerHomeScreen(game));
 			}
+		}
 	}
 
 	@Override

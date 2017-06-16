@@ -11,7 +11,7 @@ public class MyGdxGame extends Game {
 	@Override
 	public void create () {
 		Assets.load();
-		setScreen(new IntroScreen(this));
+		setScreen(new WorldmapScreen(this, 0));
 	}
 
 	@Override
